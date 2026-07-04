@@ -83,6 +83,13 @@ AWSへデプロイする前に、生成されるCloudFormationテンプレート
 - Security Groupにinbound ruleがないことを確認するテスト
 - SSM用IAMポリシーが付いていることを確認するテスト
 
+### 今回追加したもの
+
+- `test/ec2-stack.test.ts`
+- `jest.config.js`
+- `npm test` script
+- Jest関連パッケージ
+
 ### 確認すること
 
 - `npm test` が成功すること
