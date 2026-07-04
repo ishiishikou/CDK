@@ -34,7 +34,7 @@ PR単位を学習単位として扱い、以降の変更履歴を追いやすく
 
 ### 目的
 
-SSHを開けずに、SSM Session ManagerでEC2へ接続する最小構成をCDKで作成する。
+SSM Session ManagerでEC2へ接続する最小構成をCDKで作成する。
 
 ### 追加するもの
 
@@ -46,18 +46,29 @@ SSHを開けずに、SSM Session ManagerでEC2へ接続する最小構成をCDK�
 - `AmazonSSMManagedInstanceCore`
 - inbound ruleなしのSecurity Group
 
+### 今回追加したもの
+
+- `package.json`
+- `tsconfig.json`
+- `cdk.json`
+- `bin/cdk-learning.ts`
+- `lib/ec2-stack.ts`
+
 ### 確認すること
 
-- EC2にSSH inbound ruleがないこと
+- Security Groupにinbound ruleを追加していないこと
 - EC2にSSM用IAM Roleが付いていること
 - Amazon Linux 2023など、SSM Agentを利用しやすいAMIを使っていること
+- Stack名とファイル名が主要リソースであるEC2を基準にしていること
+- `npm run build` と `npx cdk synth` でローカル確認できること
 
 ### 次に進む前の理解ポイント
 
-- SSH接続とSSM接続の違い
+- SSM接続に必要なIAM Roleの役割
 - Security Groupのinbound ruleの意味
-- EC2用IAM Roleの役割
 - Public Subnetに置く理由と限界
+- Stack名は主要リソースを基準に短くすること
+- 今回はGitHub Actionsやテストコードをまだ追加していないこと
 
 ## Step 2: Pre-deploy tests with CDK assertions
 
@@ -69,7 +80,7 @@ AWSへデプロイする前に、生成されるCloudFormationテンプレート
 
 - CDK assertionsを使ったテストコード
 - EC2の数を確認するテスト
-- SSH inbound ruleがないことを確認するテスト
+- Security Groupにinbound ruleがないことを確認するテスト
 - SSM用IAMポリシーが付いていることを確認するテスト
 
 ### 確認すること

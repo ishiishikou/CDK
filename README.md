@@ -10,26 +10,82 @@ CDKのリポジトリ構成、Stack / Construct / IAM / VPC / EC2 などのコ�
 
 基本的にPRはsquash mergeする想定です。PR内のcommit数ではなく、`main`に取り込まれた後の1 commitが1つの学習ステップとして読めることを重視します。
 
-## 最初に作る予定のAWS構成
+## 現在のAWS構成
 
-最初のCDK構成では、SSHを開けずにSSM Session ManagerでEC2へ接続する構成を作成する予定です。
-
-想定する最小構成は以下です。
+Step 1では、SSM Session ManagerでEC2へ接続する最小構成を追加しています。
 
 ```text
 VPC
 └── Public Subnet
     └── EC2
-        ├── SSH inbound rule なし
+        ├── inbound ruleなしのSecurity Group
         ├── EC2用IAM Role
         └── AmazonSSMManagedInstanceCore
 ```
 
 最初からPrivate Subnet構成にはせず、まずはSSM接続に必要な要素を理解することを優先します。
 
+## 命名方針
+
+CDKコード上の名前は、主要リソースを基準に短くします。
+
+- Stackクラス名: `Ec2Stack`
+- Stack ID: `Ec2Stack`
+- Stackファイル名: `lib/ec2-stack.ts`
+- EC2のNameタグ: `cdk-learning-ec2`
+
+## リポジトリ構成
+
+```text
+.
+├── bin/
+│   └── cdk-learning.ts
+├── lib/
+│   └── ec2-stack.ts
+├── docs/
+│   └── learning-log.md
+├── cdk.json
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+## Step 1で追加したCDK構成
+
+`lib/ec2-stack.ts` では、以下を定義しています。
+
+- VPC
+- Public Subnet
+- EC2 Instance
+- inbound ruleなしのSecurity Group
+- EC2用IAM Role
+- `AmazonSSMManagedInstanceCore`
+- Amazon Linux 2023 AMI
+- `t3.micro`
+
+## ローカル確認コマンド
+
+依存関係をインストールします。
+
+```bash
+npm install
+```
+
+TypeScriptをビルドします。
+
+```bash
+npm run build
+```
+
+CloudFormationテンプレートを生成します。
+
+```bash
+npx cdk synth
+```
+
 ## テスト方針
 
-GitHub Actionsでは、まずデプロイ前テストだけを行います。
+GitHub Actionsでは、まずデプロイ前テストだけを行う予定です。
 
 初期段階では、以下のような確認を想定しています。
 
@@ -41,7 +97,7 @@ GitHub Actionsでは、まずデプロイ前テストだけを行います。
 
 ## publicリポジトリで扱わない情報
 
-このリポジトリはpublicです。実環境の識別情報、認証情報、秘密鍵、`.env`、実環境固有の設定値はコミットしません。
+このリポジトリはpublicです。実環境の識別情報、認証情報、秘密鍵、環境変数ファイル、実環境固有の設定値はコミットしません。
 
 IPアドレスやCIDRが必要な場合は、ドキュメント用の例示値を使用します。
 
