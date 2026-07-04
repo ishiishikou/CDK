@@ -25,6 +25,17 @@ VPC
 
 最初からPrivate Subnet構成にはせず、まずはSSM接続に必要な要素を理解することを優先します。
 
+## 命名方針
+
+CDKコード上の名前は、主要リソースを基準に短くします。
+
+- Stackクラス名: `Ec2Stack`
+- Stack ID: `Ec2Stack`
+- Stackファイル名: `lib/ec2-stack.ts`
+- EC2のNameタグ: `cdk-learning-ec2`
+
+SSMは接続方式であり、Stack名には含めません。
+
 ## リポジトリ構成
 
 ```text
@@ -32,7 +43,7 @@ VPC
 ├── bin/
 │   └── cdk-learning.ts
 ├── lib/
-│   └── ssm-ec2-stack.ts
+│   └── ec2-stack.ts
 ├── docs/
 │   └── learning-log.md
 ├── cdk.json
@@ -43,7 +54,7 @@ VPC
 
 ## Step 1で追加したCDK構成
 
-`lib/ssm-ec2-stack.ts` では、以下を定義しています。
+`lib/ec2-stack.ts` では、以下を定義しています。
 
 - VPC
 - Public Subnet
