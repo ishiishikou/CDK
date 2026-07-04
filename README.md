@@ -34,8 +34,6 @@ CDKコード上の名前は、主要リソースを基準に短くします。
 - Stackファイル名: `lib/ec2-stack.ts`
 - EC2のNameタグ: `cdk-learning-ec2`
 
-SSMは接続方式であり、Stack名には含めません。
-
 ## リポジトリ構成
 
 ```text
