@@ -8,7 +8,7 @@ export class SsmEc2Stack extends cdk.Stack {
     super(scope, id, props);
 
     const vpc = new ec2.Vpc(this, 'Vpc', {
-      maxAzs: 2,
+      maxAzs: 1,
       natGateways: 0,
       subnetConfiguration: [
         {
