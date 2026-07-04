@@ -52,13 +52,14 @@ SSHを開けずに、SSM Session ManagerでEC2へ接続する最小構成をCDK�
 - `tsconfig.json`
 - `cdk.json`
 - `bin/cdk-learning.ts`
-- `lib/ssm-ec2-stack.ts`
+- `lib/ec2-stack.ts`
 
 ### 確認すること
 
 - EC2にSSH inbound ruleがないこと
 - EC2にSSM用IAM Roleが付いていること
 - Amazon Linux 2023など、SSM Agentを利用しやすいAMIを使っていること
+- Stack名とファイル名が主要リソースであるEC2を基準にしていること
 - `npm run build` と `npx cdk synth` でローカル確認できること
 
 ### 次に進む前の理解ポイント
@@ -67,6 +68,7 @@ SSHを開けずに、SSM Session ManagerでEC2へ接続する最小構成をCDK�
 - Security Groupのinbound ruleの意味
 - EC2用IAM Roleの役割
 - Public Subnetに置く理由と限界
+- 接続方式ではなく主要リソースをStack名に使うこと
 - 今回はGitHub Actionsやテストコードをまだ追加していないこと
 
 ## Step 2: Pre-deploy tests with CDK assertions
