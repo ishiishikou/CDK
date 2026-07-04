@@ -12,13 +12,13 @@ CDKのリポジトリ構成、Stack / Construct / IAM / VPC / EC2 などのコ�
 
 ## 現在のAWS構成
 
-Step 1では、SSHを開けずにSSM Session ManagerでEC2へ接続する最小構成を追加しています。
+Step 1では、SSM Session ManagerでEC2へ接続する最小構成を追加しています。
 
 ```text
 VPC
 └── Public Subnet
     └── EC2
-        ├── SSH inbound rule なし
+        ├── inbound ruleなしのSecurity Group
         ├── EC2用IAM Role
         └── AmazonSSMManagedInstanceCore
 ```
@@ -63,8 +63,6 @@ CDKコード上の名前は、主要リソースを基準に短くします。
 - Amazon Linux 2023 AMI
 - `t3.micro`
 
-この段階では、EC2にSSH接続するための鍵や22番ポートの許可は作成しません。
-
 ## ローカル確認コマンド
 
 依存関係をインストールします。
@@ -99,7 +97,7 @@ GitHub Actionsでは、まずデプロイ前テストだけを行う予定です
 
 ## publicリポジトリで扱わない情報
 
-このリポジトリはpublicです。実環境の識別情報、認証情報、秘密鍵、`.env`、実環境固有の設定値はコミットしません。
+このリポジトリはpublicです。実環境の識別情報、認証情報、秘密鍵、環境変数ファイル、実環境固有の設定値はコミットしません。
 
 IPアドレスやCIDRが必要な場合は、ドキュメント用の例示値を使用します。
 
