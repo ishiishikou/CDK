@@ -16,18 +16,23 @@ export class Ec2Stack extends cdk.Stack {
           subnetType: ec2.SubnetType.PUBLIC,
           cidrMask: 24,
         },
+        {
+          name: 'private',
+          subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+          cidrMask: 24,
+        },
       ],
     });
 
     const securityGroup = new ec2.SecurityGroup(this, 'InstanceSecurityGroup', {
       vpc,
       allowAllOutbound: true,
-      description: 'Security group for SSM-only EC2 access. No inbound rules are added.',
+      description: 'Security group for EC2. No inbound rules are added.',
     });
 
     const role = new iam.Role(this, 'InstanceRole', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
-      description: 'IAM role for EC2 access through AWS Systems Manager Session Manager.',
+      description: 'IAM role for AWS Systems Manager managed instance access.',
     });
 
     role.addManagedPolicy(
@@ -37,7 +42,7 @@ export class Ec2Stack extends cdk.Stack {
     const instance = new ec2.Instance(this, 'Instance', {
       vpc,
       vpcSubnets: {
-        subnetType: ec2.SubnetType.PUBLIC,
+        subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
       },
       instanceType: new ec2.InstanceType('t3.micro'),
       machineImage: ec2.MachineImage.latestAmazonLinux2023(),
@@ -49,7 +54,7 @@ export class Ec2Stack extends cdk.Stack {
 
     new cdk.CfnOutput(this, 'InstanceId', {
       value: instance.instanceId,
-      description: 'EC2 instance ID for Session Manager connection.',
+      description: 'EC2 instance ID.',
     });
   }
 }

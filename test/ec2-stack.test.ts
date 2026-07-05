@@ -16,6 +16,12 @@ describe('Ec2Stack', () => {
     template.resourceCountIs('AWS::EC2::Instance', 1);
   });
 
+  test('creates two subnets', () => {
+    const template = createTemplate();
+
+    template.resourceCountIs('AWS::EC2::Subnet', 2);
+  });
+
   test('does not add inbound rules to the security group', () => {
     const template = createTemplate();
 

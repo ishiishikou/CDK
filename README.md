@@ -12,18 +12,21 @@ CDKのリポジトリ構成、Stack / Construct / IAM / VPC / EC2 などのコ�
 
 ## 現在のAWS構成
 
-SSM Session ManagerでEC2へ接続する最小構成です。
+EC2をPrivate Isolated Subnetに配置する構成です。
 
 ```text
 VPC
-└── Public Subnet
+├── Public Subnet
+└── Private Isolated Subnet
     └── EC2
         ├── inbound ruleなしのSecurity Group
         ├── EC2用IAM Role
         └── AmazonSSMManagedInstanceCore
 ```
 
-最初からPrivate Subnet構成にはせず、まずはSSM接続に必要な要素を理解することを優先します。
+Step 4では、EC2の配置先をPrivate Subnetへ変更します。
+
+この時点ではAWS認証なしのデプロイ前チェックまでを対象とし、実際のSSM接続に必要な通信経路は次のStepでVPC Endpointとして追加します。
 
 ## 命名方針
 
@@ -62,6 +65,7 @@ CDKコード上の名前は、主要リソースを基準に短くします。
 
 - VPC
 - Public Subnet
+- Private Isolated Subnet
 - EC2 Instance
 - inbound ruleなしのSecurity Group
 - EC2用IAM Role
@@ -76,8 +80,11 @@ CDKコード上の名前は、主要リソースを基準に短くします。
 確認する主な内容は以下です。
 
 - EC2 Instanceが1つ作成されること
+- Subnetが2つ作成されること
 - Security Groupにinbound ruleを追加していないこと
 - EC2用IAM RoleにSSM用Managed Policyが付いていること
+
+EC2の配置先は、`lib/ec2-stack.ts` の `vpcSubnets` で確認します。
 
 ## ローカル確認コマンド
 
