@@ -80,10 +80,11 @@ CDKコード上の名前は、主要リソースを基準に短くします。
 確認する主な内容は以下です。
 
 - EC2 Instanceが1つ作成されること
-- Public SubnetとPrivate Subnetが1つずつ作成されること
-- EC2 InstanceがPrivate Subnetに配置されること
+- Subnetが2つ作成されること
 - Security Groupにinbound ruleを追加していないこと
 - EC2用IAM RoleにSSM用Managed Policyが付いていること
+
+EC2の配置先は、`lib/ec2-stack.ts` の `vpcSubnets` で確認します。
 
 ## ローカル確認コマンド
 
