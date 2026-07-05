@@ -12,21 +12,25 @@ CDKのリポジトリ構成、Stack / Construct / IAM / VPC / EC2 などのコ�
 
 ## 現在のAWS構成
 
-EC2をPrivate Isolated Subnetに配置する構成です。
+EC2をPrivate Isolated Subnetに配置し、SSM接続に必要なInterface VPC Endpointを追加する構成です。
 
 ```text
 VPC
 ├── Public Subnet
 └── Private Isolated Subnet
-    └── EC2
-        ├── inbound ruleなしのSecurity Group
-        ├── EC2用IAM Role
-        └── AmazonSSMManagedInstanceCore
+    ├── EC2
+    │   ├── inbound ruleなしのSecurity Group
+    │   ├── EC2用IAM Role
+    │   └── AmazonSSMManagedInstanceCore
+    └── Interface VPC Endpoints
+        ├── ssm
+        ├── ssmmessages
+        └── ec2messages
 ```
 
-Step 4では、EC2の配置先をPrivate Subnetへ変更します。
+Step 5では、Private Subnet上のEC2がSSM関連サービスへ到達するためのVPC Endpointを追加します。
 
-この時点ではAWS認証なしのデプロイ前チェックまでを対象とし、実際のSSM接続に必要な通信経路は次のStepでVPC Endpointとして追加します。
+このリポジトリではAWS認証なしのデプロイ前チェックまでを対象とし、実AWS環境への`cdk deploy`は実行しません。
 
 ## 命名方針
 
@@ -67,9 +71,13 @@ CDKコード上の名前は、主要リソースを基準に短くします。
 - Public Subnet
 - Private Isolated Subnet
 - EC2 Instance
-- inbound ruleなしのSecurity Group
+- EC2用Security Group
+- Endpoint用Security Group
 - EC2用IAM Role
 - `AmazonSSMManagedInstanceCore`
+- SSM用Interface VPC Endpoint
+- SSM Messages用Interface VPC Endpoint
+- EC2 Messages用Interface VPC Endpoint
 - Amazon Linux 2023 AMI
 - `t3.micro`
 
@@ -81,10 +89,12 @@ CDKコード上の名前は、主要リソースを基準に短くします。
 
 - EC2 Instanceが1つ作成されること
 - Subnetが2つ作成されること
-- Security Groupにinbound ruleを追加していないこと
+- Interface VPC Endpointが3つ作成されること
+- Endpoint用Security GroupがHTTPSを許可していること
+- SSH inbound ruleを追加していないこと
 - EC2用IAM RoleにSSM用Managed Policyが付いていること
 
-EC2の配置先は、`lib/ec2-stack.ts` の `vpcSubnets` で確認します。
+EC2とVPC Endpointの配置先は、`lib/ec2-stack.ts` の `vpcSubnets` / `subnets` で確認します。
 
 ## ローカル確認コマンド
 
