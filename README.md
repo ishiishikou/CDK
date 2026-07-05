@@ -56,6 +56,8 @@ CDKコード上の名前は、主要リソースを基準に短くします。
 │   └── ec2-stack.test.ts
 ├── docs/
 │   └── learning-log.md
+├── .dockerignore
+├── Dockerfile
 ├── cdk.json
 ├── jest.config.js
 ├── package.json
@@ -98,7 +100,7 @@ EC2とVPC Endpointの配置先は、`lib/ec2-stack.ts` の `vpcSubnets` / `subne
 
 ## ローカル確認コマンド
 
-依存関係をインストールします。
+手元のNode.js環境で確認する場合は、依存関係をインストールします。
 
 ```bash
 npm install
@@ -121,6 +123,32 @@ CloudFormationテンプレートを生成します。
 ```bash
 npx cdk synth
 ```
+
+## Dockerでのローカル確認
+
+手元にNode.jsやCDKを個別インストールせずに確認する場合は、Dockerを使います。
+
+Dockerイメージをビルドします。
+
+```bash
+docker build -t cdk-learning .
+```
+
+build / test / synth をまとめて実行します。
+
+```bash
+docker run --rm cdk-learning
+```
+
+個別のコマンドだけ実行したい場合は、コンテナ内でコマンドを指定します。
+
+```bash
+docker run --rm cdk-learning npm run build
+docker run --rm cdk-learning npm test
+docker run --rm cdk-learning npx cdk synth
+```
+
+このDocker実行ではAWS認証情報を渡さず、`cdk deploy` も実行しません。
 
 ## CI
 
