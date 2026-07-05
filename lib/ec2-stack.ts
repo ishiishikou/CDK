@@ -30,6 +30,18 @@ export class Ec2Stack extends cdk.Stack {
       description: 'Security group for EC2. No inbound rules are added.',
     });
 
+    const endpointSecurityGroup = new ec2.SecurityGroup(this, 'EndpointSecurityGroup', {
+      vpc,
+      allowAllOutbound: true,
+      description: 'Security group for SSM interface VPC endpoints.',
+    });
+
+    endpointSecurityGroup.addIngressRule(
+      securityGroup,
+      ec2.Port.tcp(443),
+      'Allow HTTPS from the EC2 instance security group.',
+    );
+
     const role = new iam.Role(this, 'InstanceRole', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
       description: 'IAM role for AWS Systems Manager managed instance access.',
@@ -48,6 +60,30 @@ export class Ec2Stack extends cdk.Stack {
       machineImage: ec2.MachineImage.latestAmazonLinux2023(),
       securityGroup,
       role,
+    });
+
+    const endpointSubnets = {
+      subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+    };
+
+    const endpointSecurityGroups = [endpointSecurityGroup];
+
+    vpc.addInterfaceEndpoint('SsmEndpoint', {
+      service: ec2.InterfaceVpcEndpointAwsService.SSM,
+      subnets: endpointSubnets,
+      securityGroups: endpointSecurityGroups,
+    });
+
+    vpc.addInterfaceEndpoint('SsmMessagesEndpoint', {
+      service: ec2.InterfaceVpcEndpointAwsService.SSM_MESSAGES,
+      subnets: endpointSubnets,
+      securityGroups: endpointSecurityGroups,
+    });
+
+    vpc.addInterfaceEndpoint('Ec2MessagesEndpoint', {
+      service: ec2.InterfaceVpcEndpointAwsService.EC2_MESSAGES,
+      subnets: endpointSubnets,
+      securityGroups: endpointSecurityGroups,
     });
 
     cdk.Tags.of(instance).add('Name', 'cdk-learning-ec2');
