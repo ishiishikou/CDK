@@ -12,7 +12,7 @@ CDKのリポジトリ構成、Stack / Construct / IAM / VPC / EC2 などのコ�
 
 ## 現在のAWS構成
 
-Step 1では、SSM Session ManagerでEC2へ接続する最小構成を追加しています。
+SSM Session ManagerでEC2へ接続する最小構成です。
 
 ```text
 VPC
@@ -42,15 +42,18 @@ CDKコード上の名前は、主要リソースを基準に短くします。
 │   └── cdk-learning.ts
 ├── lib/
 │   └── ec2-stack.ts
+├── test/
+│   └── ec2-stack.test.ts
 ├── docs/
 │   └── learning-log.md
 ├── cdk.json
+├── jest.config.js
 ├── package.json
 ├── tsconfig.json
 └── README.md
 ```
 
-## Step 1で追加したCDK構成
+## CDK構成
 
 `lib/ec2-stack.ts` では、以下を定義しています。
 
@@ -62,6 +65,16 @@ CDKコード上の名前は、主要リソースを基準に短くします。
 - `AmazonSSMManagedInstanceCore`
 - Amazon Linux 2023 AMI
 - `t3.micro`
+
+## デプロイ前テスト
+
+`test/ec2-stack.test.ts` では、CDK assertionsを使って生成されるCloudFormationテンプレートを検査します。
+
+確認する主な内容は以下です。
+
+- EC2 Instanceが1つ作成されること
+- Security Groupにinbound ruleを追加していないこと
+- EC2用IAM RoleにSSM用Managed Policyが付いていること
 
 ## ローカル確認コマンド
 
@@ -77,15 +90,21 @@ TypeScriptをビルドします。
 npm run build
 ```
 
+CDK assertionsのテストを実行します。
+
+```bash
+npm test
+```
+
 CloudFormationテンプレートを生成します。
 
 ```bash
 npx cdk synth
 ```
 
-## テスト方針
+## CI方針
 
-GitHub Actionsでは、まずデプロイ前テストだけを行う予定です。
+GitHub Actionsでは、まずデプロイ前チェックだけを行う予定です。
 
 初期段階では、以下のような確認を想定しています。
 
