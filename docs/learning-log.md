@@ -141,21 +141,29 @@ EC2をPrivate Subnetに配置する構成を学ぶ。
 
 ### 追加するもの
 
-- Private Subnet
+- Private Isolated Subnet
 - EC2のSubnet配置変更
-- 必要に応じた外向き通信の設計
+- Private Subnet配置を確認するCDK assertions
+
+### 今回追加したもの
+
+- `lib/ec2-stack.ts` のSubnet構成変更
+- `test/ec2-stack.test.ts` のPrivate Subnet配置テスト
+- READMEの構成説明更新
 
 ### 確認すること
 
+- Public SubnetとPrivate Subnetが1つずつ作成されること
 - EC2がPublic SubnetではなくPrivate Subnetに配置されていること
-- 直接インターネットから到達できない構成になっていること
-- SSM接続に必要な通信経路が確保されていること
+- Security Groupにinbound ruleを追加していないこと
+- この段階では実際のSSM接続経路をまだ追加していないこと
 
 ### 次に進む前の理解ポイント
 
 - Public SubnetとPrivate Subnetの違い
-- NAT Gatewayの役割と課金
-- Private Subnet上のEC2を管理する方法
+- Private Isolated Subnetにはインターネット向けの経路がないこと
+- EC2にSSM用IAM Roleがあっても、通信経路がなければ実接続は成立しないこと
+- SSM接続用の通信経路は次StepのVPC Endpointで扱うこと
 
 ## Step 5: VPC Endpoint追加
 
