@@ -22,13 +22,34 @@ describe('Ec2Stack', () => {
     template.resourceCountIs('AWS::EC2::Subnet', 2);
   });
 
-  test('does not add inbound rules to the security group', () => {
+  test('creates three interface VPC endpoints for SSM access', () => {
     const template = createTemplate();
 
-    template.resourceCountIs('AWS::EC2::SecurityGroupIngress', 0);
-    template.hasResourceProperties('AWS::EC2::SecurityGroup', {
-      SecurityGroupIngress: Match.absent(),
+    template.resourceCountIs('AWS::EC2::VPCEndpoint', 3);
+  });
+
+  test('allows HTTPS from the EC2 security group to the endpoint security group', () => {
+    const template = createTemplate();
+
+    template.hasResourceProperties('AWS::EC2::SecurityGroupIngress', {
+      IpProtocol: 'tcp',
+      FromPort: 443,
+      ToPort: 443,
     });
+  });
+
+  test('does not allow SSH inbound access', () => {
+    const template = createTemplate();
+
+    const sshInboundRules = template.findResources('AWS::EC2::SecurityGroupIngress', {
+      Properties: {
+        IpProtocol: 'tcp',
+        FromPort: 22,
+        ToPort: 22,
+      },
+    });
+
+    expect(Object.keys(sshInboundRules)).toHaveLength(0);
   });
 
   test('attaches the SSM managed policy to the EC2 role', () => {
