@@ -143,18 +143,18 @@ EC2をPrivate Subnetに配置する構成を学ぶ。
 
 - Private Isolated Subnet
 - EC2のSubnet配置変更
-- Private Subnet配置を確認するCDK assertions
+- Subnet数を確認するCDK assertions
 
 ### 今回追加したもの
 
 - `lib/ec2-stack.ts` のSubnet構成変更
-- `test/ec2-stack.test.ts` のPrivate Subnet配置テスト
+- `test/ec2-stack.test.ts` のSubnet数テスト
 - READMEの構成説明更新
 
 ### 確認すること
 
-- Public SubnetとPrivate Subnetが1つずつ作成されること
-- EC2がPublic SubnetではなくPrivate Subnetに配置されていること
+- CDKコード上でEC2の配置先がPrivate Isolated Subnetになっていること
+- Subnetが2つ作成されること
 - Security Groupにinbound ruleを追加していないこと
 - この段階では実際のSSM接続経路をまだ追加していないこと
 
