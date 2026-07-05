@@ -111,10 +111,14 @@ Pull RequestごとにCDKコードのデプロイ前チェックを自動実行�
 ### 追加するもの
 
 - GitHub Actions workflow
-- `npm ci`
+- `npm install`
 - `npm run build`
 - `npm test`
 - `npx cdk synth`
+
+### 今回追加したもの
+
+- `.github/workflows/ci.yml`
 
 ### 確認すること
 
@@ -127,6 +131,7 @@ Pull RequestごとにCDKコードのデプロイ前チェックを自動実行�
 - CIとデプロイの違い
 - publicリポジトリでAWS認証を扱うリスク
 - まずデプロイ前テストだけを自動化する理由
+- lockfileがない間はCIでも`npm install`を使うこと
 
 ## Step 4: Private Subnet化
 
