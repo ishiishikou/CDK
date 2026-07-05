@@ -38,6 +38,9 @@ CDKコード上の名前は、主要リソースを基準に短くします。
 
 ```text
 .
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── bin/
 │   └── cdk-learning.ts
 ├── lib/
@@ -102,17 +105,20 @@ CloudFormationテンプレートを生成します。
 npx cdk synth
 ```
 
-## CI方針
+## CI
 
-GitHub Actionsでは、まずデプロイ前チェックだけを行う予定です。
+GitHub Actionsで、Pull Request作成時とmainへのpush時にデプロイ前チェックを実行します。
 
-初期段階では、以下のような確認を想定しています。
+実行するコマンドは以下です。
 
-- CDKコードがビルドできること
-- CDK assertionsによるfine-grained assertionsが通ること
-- `cdk synth`でCloudFormationテンプレートを生成できること
+```text
+npm install
+npm run build
+npm test
+npx cdk synth
+```
 
-デプロイ用のAWS認証、OIDC設定、`cdk deploy` は初期段階では入れません。
+このCIではAWS認証情報を使わず、`cdk deploy` も実行しません。
 
 ## publicリポジトリで扱わない情報
 
