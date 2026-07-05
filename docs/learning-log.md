@@ -173,23 +173,32 @@ NAT Gatewayを使わずに、SSM接続に必要なAWSサービスへ到達する
 
 ### 追加するもの
 
-- Interface VPC Endpoint
-- SSM用Endpoint
-- EC2 Messages用Endpoint
-- SSM Messages用Endpoint
+- SSM用Interface VPC Endpoint
+- EC2 Messages用Interface VPC Endpoint
+- SSM Messages用Interface VPC Endpoint
 - Endpoint用Security Group
+- Endpoint用Security GroupへのHTTPS inbound rule
+
+### 今回追加したもの
+
+- `lib/ec2-stack.ts` のInterface VPC Endpoint追加
+- `test/ec2-stack.test.ts` のVPC Endpoint数テスト
+- `test/ec2-stack.test.ts` のEndpoint用HTTPS inbound ruleテスト
+- READMEの構成説明更新
 
 ### 確認すること
 
-- SSM接続に必要なEndpointが作成されていること
-- Private Subnet上のEC2からSSM接続できる構成になっていること
-- 不要なinbound ruleが増えていないこと
+- SSM接続に必要なEndpointが3つ作成されること
+- Endpoint用Security GroupがHTTPSを許可していること
+- SSH inbound ruleを追加していないこと
+- 実AWS環境への`cdk deploy`はまだ実行しないこと
 
 ### 次に進む前の理解ポイント
 
 - VPC Endpointの役割
 - NAT Gatewayとの違い
-- Endpoint用Security Groupの考え方
+- Interface EndpointにはSecurity Groupが必要なこと
+- SSM接続にはSSM / SSM Messages / EC2 MessagesのEndpointが必要なこと
 
 ## Step 6: ECR / ECS on EC2 への拡張
 
